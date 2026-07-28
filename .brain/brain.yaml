@@ -1,0 +1,7 @@
+brain: 1
+spec: "0.1"
+conformance: 2
+name: project-brain
+description: The Project Brain standard itself — specification, vocabulary, governance.
+entry: overview.md
+language: en
