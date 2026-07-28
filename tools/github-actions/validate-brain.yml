@@ -1,0 +1,35 @@
+# Validate this repository's brain against the Project Brain spec on every PR.
+# Copy to: your-repo/.github/workflows/validate-brain.yml
+#
+# Fails the check when .brain/ violates its claimed conformance level —
+# canonical items without verification, candidates claiming authority,
+# missing metadata, broken context packs, duplicate ids, and so on.
+
+name: Validate brain
+
+on:
+  pull_request:
+    paths: [".brain/**"]
+  push:
+    branches: [main]
+    paths: [".brain/**"]
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependency
+        run: pip install pyyaml
+
+      - name: Fetch validator
+        run: curl -fsSL -o /tmp/validate.py https://raw.githubusercontent.com/alenoir/project-brain/main/conformance/validate.py
+
+      - name: Validate brain
+        run: python3 /tmp/validate.py .brain

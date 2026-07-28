@@ -182,6 +182,7 @@ any language, map it to one of these actions:
 | "update the brain" / "update the brain tools" | Run the update command (see **Maintenance** below). Nothing else. |
 | "backfill the brain" / "mine the history" | Deep-backfill mode of `brain-init`: era-based history mining. |
 | "brain status" / "where is the brain at" | Report: pending items in `candidates/`, items past `review_by`, canonical items missing `verified`, items flagged `needs-review`. |
+| "validate the brain" / "lint the brain" | Run `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/conformance/validate.py \| python3 - .brain` (needs `pyyaml`). Report violations; fix only what the human approves. |
 | "promote `<item>`" | The human is verifying: on their explicit instruction, move the candidate to its area, set the authority they chose, and write `verified: {by: <their handle>, at: today}`. This is the only case where you may write a `verified` block — you act as scribe for a named human decision; never promote on your own initiative. |
 | anything else about "the brain" | Interpret it against the local `.brain/` content first; ask only if genuinely ambiguous. |
 
@@ -370,7 +371,9 @@ This repository carries a brain: governed project knowledge under `.brain/`
    run `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
    from the repo root, nothing else; "backfill" → era-based history mining
    into candidates; "brain status" → report pending candidates, items past
-   `review_by`, canonical items missing `verified`; "promote <item>" → on
+   `review_by`, canonical items missing `verified`; "validate the brain" →
+   run `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/conformance/validate.py | python3 - .brain`
+   and report violations; "promote <item>" → on
    the human's explicit instruction only, move the candidate to its area,
    set the authority they chose, write `verified: {by: their handle, at:
    today}` — the sole case where you may write a verified block.
