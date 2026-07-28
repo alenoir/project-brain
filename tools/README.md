@@ -26,6 +26,16 @@ What the installer places (idempotent, never overwrites):
 
 The Bridge File is the floor (discovery); the skill/rule is what makes the protocol *followed*.
 
+## Staying up to date
+
+Installed repositories are deliberately decoupled from this one: a brain is self-contained files, pins its spec version in `brain.yaml`, and never phones home — nothing here can break your projects (Principles P1, P2, and the durability contract of [spec ch. 10](../spec/v0.1/10-versioning.md)). Updates are therefore always **pull, never push**:
+
+- **Tools** (the copied skills/rules): refresh them anytime with
+  `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
+  — tool-owned files are overwritten, your `.brain/` content and `AGENTS.md` never are.
+- **The spec**: your brain keeps working against the version it pins. Migrating to a newer spec version is an explicit, human-approved act, guided by the migration notes each version ships (post-1.0, minors are strictly additive — nothing to do at all).
+- **Knowing about it**: watch this repository's releases. Significant changes land as spec versions and release notes, never as silent edits.
+
 ## Planned (v0.4, separate repository)
 
 Reference CLI: `brain init`, `brain validate`, `brain pack <intent>`, `brain triage`, `brain gc` — see [`ROADMAP.md`](../ROADMAP.md).

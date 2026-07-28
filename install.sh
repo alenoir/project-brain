@@ -5,11 +5,21 @@
 # Usage, from anywhere inside the target repository:
 #   curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh
 #
+# Refresh the installed tools (skills, rules) to their latest version:
+#   curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update
+#
 # Creates a Level 1 brain (.brain/), an AGENTS.md bridge file, and agent
-# consumers (Claude Code skill; Cursor rule if .cursor/ exists).
-# Idempotent: never overwrites an existing file.
+# consumers (Claude Code skills; Cursor rule if .cursor/ exists).
+# Idempotent: never overwrites an existing file, except tool-owned files
+# (the skills and rules it installed) when run with --update. Your knowledge
+# (.brain/ content, AGENTS.md) is never overwritten, in any mode.
 
 set -eu
+
+UPDATE=0
+case "${1:-}" in
+  --update|update) UPDATE=1 ;;
+esac
 
 ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
   echo "project-brain: error: run this inside a git repository" >&2
@@ -32,6 +42,25 @@ write_if_absent() {
   mkdir -p "$(dirname "$wia_path")"
   cat >"$wia_path"
   say "  create  $wia_path"
+}
+
+# write_tool <path>  (content on stdin) — tool-owned file: refreshed on --update
+write_tool() {
+  wt_path=$1
+  if [ -e "$wt_path" ]; then
+    if [ "$UPDATE" -eq 0 ]; then
+      say "  skip    $wt_path (exists; refresh with --update)"
+      cat >/dev/null
+      return 0
+    fi
+    mkdir -p "$(dirname "$wt_path")"
+    cat >"$wt_path"
+    say "  update  $wt_path"
+    return 0
+  fi
+  mkdir -p "$(dirname "$wt_path")"
+  cat >"$wt_path"
+  say "  create  $wt_path"
 }
 
 say "Installing Project Brain (spec 0.1) into $ROOT"
@@ -118,7 +147,7 @@ else
 fi
 
 # ------------------------------------------------- Claude Code skill
-write_if_absent .claude/skills/project-brain/SKILL.md <<'EOF'
+write_tool .claude/skills/project-brain/SKILL.md <<'EOF'
 ---
 name: project-brain
 description: Read and respect this project's .brain/ directory (Project Brain standard). Use at the start of any coding, review, or analysis task in a repository containing .brain/brain.yaml, and again before finishing a significant session to record findings as candidates.
@@ -173,7 +202,7 @@ this protocol instead of ad-hoc exploration.
 EOF
 
 # ------------------------------------------------- brain-init bootstrap skill
-write_if_absent .claude/skills/brain-init/SKILL.md <<'EOF'
+write_tool .claude/skills/brain-init/SKILL.md <<'EOF'
 ---
 name: brain-init
 description: Bootstrap a Project Brain (.brain/) for this repository by analyzing its code, git history, and existing docs, then generating the brain content as verifiable candidates. Use when the user asks to initialize, install, create, or bootstrap a brain / Project Brain on a repository.
@@ -247,7 +276,7 @@ EOF
 
 # ------------------------------------------------- Cursor rule (if Cursor used)
 if [ -d .cursor ]; then
-  write_if_absent .cursor/rules/project-brain.mdc <<'EOF'
+  write_tool .cursor/rules/project-brain.mdc <<'EOF'
 ---
 description: Project Brain protocol — read and respect .brain/ (Project Brain standard)
 alwaysApply: true
