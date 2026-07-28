@@ -24,6 +24,7 @@ any language, map it to one of these actions:
 | "brain status" / "where is the brain at" | Report: pending items in `candidates/`, items past `review_by`, canonical items missing `verified`, items flagged `needs-review`. |
 | "validate the brain" / "lint the brain" | Run `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/conformance/validate.py \| python3 - .brain` (needs `pyyaml`). Report violations; fix only what the human approves. |
 | "promote `<item>`" | The human is verifying: on their explicit instruction, move the candidate to its area, set the authority they chose, and write `verified: {by: <their handle>, at: today}`. This is the only case where you may write a `verified` block — you act as scribe for a named human decision; never promote on your own initiative. |
+| "review the brain" / "garden the brain" / "triage" / "reorganize" / "archive" | Delegate to the **brain-curator** agent (`.claude/agents/brain-curator.md`) — the dedicated maintainer of the brain's health. Prefer it for any multi-item maintenance work. |
 | anything else about "the brain" | Interpret it against the local `.brain/` content first; ask only if genuinely ambiguous. |
 
 ## Reading protocol (start of task)

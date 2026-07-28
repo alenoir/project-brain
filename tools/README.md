@@ -22,6 +22,7 @@ What the installer places (idempotent, never overwrites):
 | Bridge File | discovery by every AGENTS.md-aware agent | `AGENTS.md` (created or appended) |
 | [`skills/claude-code/SKILL.md`](skills/claude-code/SKILL.md) | protocol compliance: packs, authority, candidates-only writing | `.claude/skills/project-brain/SKILL.md` |
 | [`skills/claude-code-init/SKILL.md`](skills/claude-code-init/SKILL.md) | agent-driven bootstrap ("init the brain") | `.claude/skills/brain-init/SKILL.md` |
+| [`agents/claude-code/brain-curator.md`](agents/claude-code/brain-curator.md) | dedicated maintainer subagent: builds, triages, reorganizes, archives — guarantor of the brain's pertinence | `.claude/agents/brain-curator.md` |
 | [`rules/cursor/project-brain.mdc`](rules/cursor/project-brain.mdc) | same protocol for Cursor (only if `.cursor/` exists) | `.cursor/rules/project-brain.mdc` |
 
 The Bridge File is the floor (discovery); the skill/rule is what makes the protocol *followed*.
