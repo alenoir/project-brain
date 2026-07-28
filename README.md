@@ -95,6 +95,14 @@ your-project/
 
 Every knowledge item declares **who wrote it** (provenance), **how much to trust it** (authority), and **where it is in its life** (status). Agents read canonically, and **write only candidates** — humans promote.
 
+## Try it on your repository
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh
+```
+
+then open your coding agent and say **"init the brain"**: it analyzes your code, git history, and existing docs, and writes the brain content itself — everything marked `candidate` until you verify and promote it. Details in [`tools/`](tools/).
+
 ## Repository map
 
 | Path | Content |

@@ -5,7 +5,7 @@ Thank you for helping build a standard meant to outlive its tools.
 ## Ground rules
 
 - **English** is the working language of the standard (content of real projects' brains can be in any language — see `language` in the manifest).
-- **No code in this repository.** The reference implementation lives elsewhere (from v0.4). This repo holds specification, schemas, conformance fixtures, and examples only.
+- **No implementation code in this repository.** The reference implementation lives elsewhere (from v0.4). This repo holds specification, schemas, conformance fixtures, and examples — plus two bounded, documented exceptions: the bootstrap `install.sh` and the prompt-only reference consumers in `tools/` (see `tools/README.md`).
 - **No real project's memory.** Examples are fictional (Principle P1).
 - Normative statements use RFC 2119 keywords, and only in `spec/`.
 

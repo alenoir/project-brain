@@ -26,8 +26,10 @@ review_every: 4w
 - First two target agents for skill/rules packaging (RFC 0001 open question 1).
 
 **Frozen — do not touch**
-- No code in this repository (Mission 1 / `CONTRIBUTING.md`): no CLI, no
-  package manifests, no implementation. Tools are Layer 2, elsewhere.
+- No implementation code in this repository (Mission 1 / `CONTRIBUTING.md`):
+  no CLI, no package manifests. Bounded exceptions, documented in
+  `tools/README.md`: the bootstrap `install.sh` and the prompt-only
+  reference consumers (skills/rules). Tools proper are Layer 2, elsewhere.
 
 **Next milestone**
 - v0.1 exit: three unaffiliated people hand-write a Level 1–2 brain from the
