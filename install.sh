@@ -139,7 +139,10 @@ standard — https://github.com/alenoir/project-brain).
 
 - Start with `.brain/brain.yaml`, then follow its `entry` (`.brain/overview.md`).
 - Canonical rules and invariants in `.brain/rules/` are binding.
-- Write your findings only to `.brain/candidates/` — never elsewhere in `.brain/`.'
+- Write your findings only to `.brain/candidates/` — never elsewhere in `.brain/`.
+- To update the Project Brain tooling of this repo ("update the brain"), run
+  `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
+  — do not clone the standard'"'"'s repository.'
 
 if [ -e AGENTS.md ]; then
   if grep -q '\.brain/' AGENTS.md; then
@@ -157,7 +160,7 @@ fi
 write_tool .claude/skills/project-brain/SKILL.md <<'EOF'
 ---
 name: project-brain
-description: Read and respect this project's .brain/ directory (Project Brain standard). Use at the start of any coding, review, or analysis task in a repository containing .brain/brain.yaml, and again before finishing a significant session to record findings as candidates.
+description: Read and respect this project's .brain/ directory (Project Brain standard). Use at the start of any coding, review, or analysis task in a repository containing .brain/brain.yaml, before finishing a significant session to record findings as candidates, and when asked to update or refresh the Project Brain tooling ("update the brain").
 ---
 
 # Project Brain protocol
@@ -206,6 +209,21 @@ this protocol instead of ad-hoc exploration.
   `candidate`, never write a `verified` block. Humans promote; you propose.
 - Prefer proposing an amendment to an existing item (reference its `id`)
   over creating a near-duplicate.
+
+## Maintenance ("update the brain" / "update the brain tools")
+
+When asked to update or refresh the Project Brain setup of this repository,
+run, from the repo root:
+
+    curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update
+
+That is the entire update channel: it refreshes the installed skills/rules
+and never touches `.brain/` content or `AGENTS.md`. Do **not** clone the
+standard's repository (https://github.com/alenoir/project-brain) — nothing
+in this repo depends on a local copy of it.
+
+Updating the brain's *content* is a different act: propose candidates (see
+above), or edit exactly the items the human designates.
 EOF
 
 # ------------------------------------------------- brain-init bootstrap skill
@@ -329,6 +347,9 @@ This repository carries a brain: governed project knowledge under `.brain/`
    matter `authority: candidate`, `provenance: agent`, and `sources`. Never
    write elsewhere in `.brain/`, never set higher authority, never write
    `verified` blocks. Humans promote; you propose.
+6. "Update the brain" / "update the brain tools" means: run
+   `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
+   from the repo root. Never clone the standard's repository for this.
 EOF
 else
   say "  skip    .cursor/rules/ (no .cursor/ directory — not a Cursor project)"

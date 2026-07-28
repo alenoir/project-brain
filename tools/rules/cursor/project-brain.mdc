@@ -21,3 +21,6 @@ This repository carries a brain: governed project knowledge under `.brain/`
    matter `authority: candidate`, `provenance: agent`, and `sources`. Never
    write elsewhere in `.brain/`, never set higher authority, never write
    `verified` blocks. Humans promote; you propose.
+6. "Update the brain" / "update the brain tools" means: run
+   `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
+   from the repo root. Never clone the standard's repository for this.
