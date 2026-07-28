@@ -8,6 +8,9 @@
 # Refresh the installed tools (skills, rules) to their latest version:
 #   curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update
 #
+# Also install a weekly GitHub Action that opens a PR when the tools change:
+#   curl -fsSL .../install.sh | sh -s -- --auto-update
+#
 # Creates a Level 1 brain (.brain/), an AGENTS.md bridge file, and agent
 # consumers (Claude Code skills; Cursor rule if .cursor/ exists).
 # Idempotent: never overwrites an existing file, except tool-owned files
@@ -17,9 +20,13 @@
 set -eu
 
 UPDATE=0
-case "${1:-}" in
-  --update|update) UPDATE=1 ;;
-esac
+AUTO=0
+for arg in "$@"; do
+  case "$arg" in
+    --update|update) UPDATE=1 ;;
+    --auto-update) AUTO=1 ;;
+  esac
+done
 
 ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
   echo "project-brain: error: run this inside a git repository" >&2
@@ -303,6 +310,57 @@ This repository carries a brain: governed project knowledge under `.brain/`
 EOF
 else
   say "  skip    .cursor/rules/ (no .cursor/ directory — not a Cursor project)"
+fi
+
+# ------------------------------------------------- auto-update workflow (opt-in)
+if [ "$AUTO" -eq 1 ]; then
+  write_tool .github/workflows/update-project-brain-tools.yml <<'EOF'
+# Weekly automatic refresh of the Project Brain tool files (skills/rules).
+# Opens a pull request when the tools changed upstream — never commits
+# directly, never touches your knowledge (.brain/ content, AGENTS.md).
+#
+# Requires, in your repository settings (Settings -> Actions -> General):
+#   "Allow GitHub Actions to create and approve pull requests" — enabled.
+
+name: Update Project Brain tools
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # Mondays 06:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refresh Project Brain tools
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update
+
+      - name: Open a pull request if anything changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/update-project-brain-tools
+          title: "chore: update Project Brain tools"
+          commit-message: "chore: update Project Brain tools (install.sh --update)"
+          body: |
+            Automated refresh of the Project Brain tool files (agent skills and rules)
+            from https://github.com/alenoir/project-brain.
+
+            - Only tool-owned files are touched; knowledge in `.brain/` and `AGENTS.md` never is.
+            - Review the diff like any dependency update, then merge.
+          labels: dependencies
+EOF
+  say "  note    enable 'Allow GitHub Actions to create and approve pull requests'"
+  say "          in Settings -> Actions -> General for the auto-update PRs to open."
+else
+  say "  hint    add --auto-update to install a weekly PR-based tools refresh"
 fi
 
 say ""

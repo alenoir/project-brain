@@ -33,6 +33,7 @@ Installed repositories are deliberately decoupled from this one: a brain is self
 - **Tools** (the copied skills/rules): refresh them anytime with
   `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
   — tool-owned files are overwritten, your `.brain/` content and `AGENTS.md` never are.
+- **Automatically**: install the weekly [GitHub Action](github-actions/update-project-brain-tools.yml) (`install.sh --auto-update`, or copy it to `.github/workflows/`). It runs `--update` every Monday and **opens a pull request** when the tools changed — never a silent commit: reviewing that PR is the same governance gesture as everywhere else in the standard. Requires "Allow GitHub Actions to create and approve pull requests" in the repo's Actions settings.
 - **The spec**: your brain keeps working against the version it pins. Migrating to a newer spec version is an explicit, human-approved act, guided by the migration notes each version ships (post-1.0, minors are strictly additive — nothing to do at all).
 - **Knowing about it**: watch this repository's releases. Significant changes land as spec versions and release notes, never as silent edits.
 
