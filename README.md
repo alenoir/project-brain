@@ -95,13 +95,55 @@ your-project/
 
 Every knowledge item declares **who wrote it** (provenance), **how much to trust it** (authority), and **where it is in its life** (status). Agents read canonically, and **write only candidates** — humans promote.
 
-## Try it on your repository
+## How to install
+
+### One command
+
+From inside your repository:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh
 ```
 
-then open your coding agent and say **"init the brain"**: it analyzes your code, git history, and existing docs, and writes the brain content itself — everything marked `candidate` until you verify and promote it. Details in [`tools/`](tools/).
+This scaffolds a Level 1 brain (`.brain/`), creates or extends the `AGENTS.md` bridge, and installs the agent skills (`project-brain` for everyday protocol compliance, `brain-init` for bootstrap). It is idempotent and never overwrites your files. Then open your coding agent and say **"init the brain"** — it writes the brain content itself.
+
+### Or just paste this prompt into your agent
+
+No prerequisite — works with Claude Code, Cursor, Codex, Aider, or any agent that can read and write files in your repo:
+
+```text
+Install Project Brain (https://github.com/alenoir/project-brain) on this repository.
+
+1. Run: curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh
+   If you cannot execute it, fetch and read it, then create the same files by hand.
+
+2. Then bootstrap the brain's content (the brain-init skill just installed at
+   .claude/skills/brain-init/SKILL.md describes this in full): analyze the
+   codebase, the git history, and the existing docs (README, docs/, ADRs,
+   CLAUDE.md, AGENTS.md), and replace the TODO scaffolds under .brain/ with
+   real content:
+   - overview.md — what this project is, why it exists, its non-goals,
+     its key vocabulary;
+   - state/now.md — what is in flight, frozen, or next, from recent history;
+   - decisions/ — one file per decision whose rationale you can actually
+     find (import existing ADRs with provenance: imported);
+   - rules/ — one file per invariant or business rule you can evidence
+     from tests, comments, or incident fixes, with sources and the
+     consequence of violating it.
+
+3. Golden rule: record only what the code cannot say. Never paraphrase what
+   any reader can derive from the code itself.
+
+4. Mark every item you write: provenance: agent, status: draft,
+   authority: candidate. Never set authority: canonical, never write a
+   verified block — I promote, you propose.
+
+5. Do not commit. Finish with a promotion checklist: each item you created,
+   your confidence in it, what I should verify before promoting it, and the
+   open questions you could not answer from the repository alone.
+```
+
+Your agent generates; **you** review the diff and promote what is true (set `authority: canonical` and add a `verified: {by, at}` block). That review is the standard's governance in action. Details in [`tools/`](tools/).
 
 ## Repository map
 
