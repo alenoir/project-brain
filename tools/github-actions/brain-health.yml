@@ -1,0 +1,65 @@
+# Weekly brain health report — no LLM required.
+# Copy to: your-repo/.github/workflows/brain-health.yml
+#
+# Runs the Project Brain validator every week; when it finds errors or
+# warnings (non-conformance, past-due reviews, stale candidates), it opens
+# — or updates — a single "Brain health" issue with the report, so the
+# gardening backlog is visible without anyone remembering to check.
+
+name: Brain health
+
+on:
+  schedule:
+    - cron: "23 7 * * 1" # Mondays 07:23 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run validator
+        id: validate
+        run: |
+          pip install --quiet pyyaml
+          curl -fsSL -o /tmp/validate.py https://raw.githubusercontent.com/alenoir/project-brain/main/conformance/validate.py
+          set +e
+          python3 /tmp/validate.py .brain > /tmp/report.txt 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          cat /tmp/report.txt
+
+      - name: Open or update the health issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Only report when there is something to garden
+          if grep -qE "^(ERROR|WARN)" /tmp/report.txt; then
+            TITLE="Brain health: gardening needed"
+            BODY_FILE=/tmp/issue.md
+            {
+              echo "Weekly automatic report from the Project Brain validator."
+              echo
+              echo '```'
+              cat /tmp/report.txt
+              echo '```'
+              echo
+              echo "Next step: run a gardening pass — tell your agent \"review the brain\" (brain-curator)."
+            } > "$BODY_FILE"
+            EXISTING=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number')
+            if [ -n "$EXISTING" ]; then
+              gh issue comment "$EXISTING" --body-file "$BODY_FILE"
+            else
+              gh issue create --title "$TITLE" --body-file "$BODY_FILE"
+            fi
+          else
+            echo "Brain healthy — nothing to report."
+          fi

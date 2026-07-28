@@ -38,6 +38,10 @@ Installed repositories are deliberately decoupled from this one: a brain is self
 - **The spec**: your brain keeps working against the version it pins. Migrating to a newer spec version is an explicit, human-approved act, guided by the migration notes each version ships (post-1.0, minors are strictly additive — nothing to do at all).
 - **Knowing about it**: watch this repository's releases. Significant changes land as spec versions and release notes, never as silent edits.
 
+## Health watch in CI
+
+Copy [`github-actions/brain-health.yml`](github-actions/brain-health.yml) to `.github/workflows/`: every Monday the validator runs and, if it finds anything to garden (non-conformance, past-due reviews, stale candidates), opens or updates a single **"Brain health"** issue with the report. No LLM involved — the curation itself stays a session act ("review the brain"), but the backlog becomes visible without anyone remembering to check.
+
 ## Validate in CI
 
 Copy [`github-actions/validate-brain.yml`](github-actions/validate-brain.yml) to your repo's `.github/workflows/`: every PR touching `.brain/` is checked against the spec by [`conformance/validate.py`](../conformance/validate.py) — non-conformant knowledge (canonical without verification, candidates claiming authority, broken packs…) fails the check instead of silently rotting. Locally or on demand, say **"validate the brain"** to your agent.

@@ -67,6 +67,9 @@ any language, map it to one of these actions:
   `candidate`, never write a `verified` block. Humans promote; you propose.
 - Prefer proposing an amendment to an existing item (reference its `id`)
   over creating a near-duplicate.
+- If the session produced significant decisions, architectural changes, or
+  drift discoveries, **delegate a curation pass to the brain-curator agent**
+  (`.claude/agents/brain-curator.md`) before ending — don't wait to be asked.
 
 ## Maintenance ("update the brain" / "update the brain tools")
 
