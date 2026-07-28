@@ -21,6 +21,14 @@ This repository carries a brain: governed project knowledge under `.brain/`
    matter `authority: candidate`, `provenance: agent`, and `sources`. Never
    write elsewhere in `.brain/`, never set higher authority, never write
    `verified` blocks. Humans promote; you propose.
-6. "Update the brain" / "update the brain tools" means: run
-   `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
-   from the repo root. Never clone the standard's repository for this.
+6. In this repo, "the brain" always means the local `.brain/` and its
+   installed tooling — never the standard's own repository (do not clone
+   it). Map brain requests, in any language, to: "init the brain" →
+   generate candidate content by analyzing the repo; "update the brain" →
+   run `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
+   from the repo root, nothing else; "backfill" → era-based history mining
+   into candidates; "brain status" → report pending candidates, items past
+   `review_by`, canonical items missing `verified`; "promote <item>" → on
+   the human's explicit instruction only, move the candidate to its area,
+   set the authority they chose, write `verified: {by: their handle, at:
+   today}` — the sole case where you may write a verified block.
