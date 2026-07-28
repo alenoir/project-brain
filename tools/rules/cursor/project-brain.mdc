@@ -1,0 +1,23 @@
+---
+description: Project Brain protocol — read and respect .brain/ (Project Brain standard)
+alwaysApply: true
+---
+
+This repository carries a brain: governed project knowledge under `.brain/`
+(Project Brain standard). Before working:
+
+1. Read `.brain/brain.yaml`, then its `entry` file (normally `.brain/overview.md`).
+2. If `.brain/context/manifest.yaml` exists, load the pack matching your task
+   intent (else the `default` pack): all `required` items in order, then
+   `recommended` as budget allows; honor `on_demand` path triggers before
+   editing matching files. Otherwise read `overview.md`, `state/now.md`, and
+   all of `rules/`.
+3. `authority: canonical` items are ground truth — never knowingly violate a
+   canonical invariant or rule; stop and ask the human instead. `candidate`
+   items are unverified proposals, not truth. Items past `review_by` are stale.
+4. If code contradicts a canonical item, flag the drift — do not silently
+   pick a side.
+5. Record durable session findings only in `.brain/candidates/` with front
+   matter `authority: candidate`, `provenance: agent`, and `sources`. Never
+   write elsewhere in `.brain/`, never set higher authority, never write
+   `verified` blocks. Humans promote; you propose.
