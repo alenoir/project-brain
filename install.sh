@@ -268,6 +268,28 @@ Create, with today's date and truthful front matter
 7. If existing ADRs were found: import them under `.brain/decisions/` with
    `provenance: imported` and `sources` pointing at the originals.
 
+## Optional — deep backfill (when the human asks to "mine the history")
+
+By default you work from the current state plus salient history. On request,
+backfill the full git history — structured, never commit-by-commit:
+
+1. **Map eras**: tags/releases, major merges, rewrites and renames
+   (`git log --stat` at boundaries). Eras give the archive its shape.
+2. **Mine decision signals, not everything**:
+   - `git log --grep -i -E "revert|rollback|because|instead of|workaround|do not|breaking|migrat"` —
+     commits whose messages *argue* are decision records waiting to happen;
+   - reverts and re-reverts: each is a lesson (what was tried, abandoned, why);
+   - `git blame` on defensive code, odd constants, disabled tests;
+   - if you can read PRs/issues (gh, MCP), their descriptions and review
+     threads are the richest rationale source — cite them in `sources`.
+3. **Produce per era**: at most a handful of high-value candidates —
+   `decisions/` with commit/PR sources, `archive/` items for what was true
+   and no longer is (historical knowledge), and open questions for every
+   "why" you could not evidence.
+4. **Scale rule**: on large histories, backfill one era or one subsystem per
+   session, newest first — recent history pays off most. A fabricated "why"
+   is worse than a recorded open question, always.
+
 ## Step 4 — Report for verification
 
 End with a promotion checklist for the human, item by item:
