@@ -1,0 +1,8 @@
+brain: 1
+spec: "0.1"
+conformance: 3
+name: acme-billing
+description: Invoicing and payment orchestration service for Acme.
+entry: overview.md
+context: context/manifest.yaml
+language: en

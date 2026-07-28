@@ -1,0 +1,14 @@
+pack: 1
+intent: bugfix
+description: Diagnosing and fixing defects in acme-billing.
+required:
+  - overview.md
+  - state/now.md
+  - rules/
+recommended:
+  - decisions/0001-event-sourced-ledger.md
+on_demand:
+  - match: "src/ledger/**"
+    load: [decisions/0001-event-sourced-ledger.md]
+  - match: "src/payments/**"
+    load: [candidates/2026-07-12-retry-idempotency.md]   # candidate: context, not truth

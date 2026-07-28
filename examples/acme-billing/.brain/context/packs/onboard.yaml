@@ -1,0 +1,9 @@
+pack: 1
+intent: onboard
+description: First contact with acme-billing.
+required:
+  - overview.md
+  - state/now.md
+  - rules/
+recommended:
+  - decisions/

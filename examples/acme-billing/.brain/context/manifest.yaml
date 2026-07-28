@@ -1,0 +1,9 @@
+context: 1
+default: onboard
+packs:
+  onboard:
+    file: packs/onboard.yaml
+    description: First contact with the project.
+  bugfix:
+    file: packs/bugfix.yaml
+    description: Diagnosing and fixing defects.
