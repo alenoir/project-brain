@@ -23,7 +23,7 @@ any language, map it to one of these actions:
 | "backfill the brain" / "mine the history" | Deep-backfill mode of `brain-init`: era-based history mining. |
 | "brain status" / "where is the brain at" | Report: pending items in `candidates/`, items past `review_by`, canonical items missing `verified`, items flagged `needs-review`. |
 | "validate the brain" / "lint the brain" | Run `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/conformance/validate.py \| python3 - .brain` (needs `pyyaml`). Report violations; fix only what the human approves. |
-| "promote `<item>`" | The human is verifying: on their explicit instruction, move the candidate to its area, set the authority they chose, and write `verified: {by: <their handle>, at: today}`. This is the only case where you may write a `verified` block — you act as scribe for a named human decision; never promote on your own initiative. |
+| "promote `<item>`" | The human is verifying: on their explicit instruction, move the candidate to its area, set the authority they chose, and write `verified: {by: <their handle>, at: today}` — scribe for a named human decision; never promote on your own initiative. If the manifest declares `verification: merge`, prefer packaging promotions as a PR listing the promoted ids: merging is signing (spec 6.4). |
 | "review the brain" / "garden the brain" / "triage" / "reorganize" / "archive" | Delegate to the **brain-curator** agent (`.claude/agents/brain-curator.md`) — the dedicated maintainer of the brain's health. Prefer it for any multi-item maintenance work. |
 | anything else about "the brain" | Interpret it against the local `.brain/` content first; ask only if genuinely ambiguous. |
 
@@ -56,20 +56,38 @@ any language, map it to one of these actions:
 - If the code contradicts a canonical item, do not silently pick a side:
   flag the drift to the human (and propose a candidate, below).
 
-## Writing protocol (end of significant session)
+## Consultation duties (during the task — not just at start)
 
-- Distill durable findings — things the next session would otherwise
-  rediscover — into `.brain/candidates/<date>-<slug>.md`.
-- Front matter MUST include: `id`, `type`, `title`, `status: draft`,
-  `authority: candidate`, `provenance: agent`, `created`, `updated`, and
-  `sources` citing your evidence (paths, commits, PRs).
-- **Never** write elsewhere in `.brain/`, never set authority above
-  `candidate`, never write a `verified` block. Humans promote; you propose.
-- Prefer proposing an amendment to an existing item (reference its `id`)
-  over creating a near-duplicate.
-- If the session produced significant decisions, architectural changes, or
-  drift discoveries, **delegate a curation pass to the brain-curator agent**
-  (`.claude/agents/brain-curator.md`) before ending — don't wait to be asked.
+- **Before editing files in a governed path** (any path matched by a rule's
+  `scope` or a pack's `on_demand`): re-read the matching items first.
+- **Before asking the human "why is this like this?" — or worse, guessing**:
+  check `decisions/` and `archive/`. The answer is often already recorded.
+- **Before creating anything** (a file, a pattern, a dependency): check
+  `knowledge/` and `architecture/` for the existing shape.
+- When the brain answered your question, say so; when it should have but
+  didn't, that gap is a finding to record (below).
+
+## Maintenance duties (the brain is yours to keep true — RFC 0002)
+
+The brain has two tiers. **Tier 1 you maintain directly**, as part of
+ordinary work — no permission needed, no candidates detour:
+
+- `state/now.md` — **update it before ending any session of significant
+  work** (in-flight, freezes, debt discovered). Keep `updated` current.
+  This is a duty: a stale state file is your failure, not the human's.
+- `knowledge/`, `architecture/`, `guides/` — create and update items
+  freely at `authority: informative`, `provenance: agent` (or `mixed`),
+  always with `sources`. Update existing items rather than duplicating.
+
+**Tier 2 binds — you propose, humans sign**: `rules/`, `decisions/`, and
+anything `canonical`. Proposals go to `.brain/candidates/<date>-<slug>.md`
+(`authority: candidate`, `sources` required). Never set `canonical`, never
+write a `verified` block on your own initiative, never change the substance
+of a canonical item (amendment candidates only).
+
+If the session produced significant decisions, architectural changes, or
+drift discoveries, **delegate a curation pass to the brain-curator agent**
+(`.claude/agents/brain-curator.md`) before ending — don't wait to be asked.
 
 ## Maintenance ("update the brain" / "update the brain tools")
 

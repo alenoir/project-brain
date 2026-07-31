@@ -31,9 +31,13 @@ write the open question into the item rather than inventing a rationale.
 
 ## Step 3 — Generate
 
-Create, with today's date and truthful front matter
-(`provenance: agent`, `status: draft`, `authority: candidate`,
-`generator: "<your tool name>"`, `sources` on every claim):
+Create, with today's date and truthful front matter (`provenance: agent`,
+`generator: "<your tool name>"`, `sources` on every claim). Authority follows
+the two tiers (RFC 0002): **Tier-1 content (overview, state, knowledge,
+architecture, guides) goes directly in place at `authority: informative`,
+`status: active`** — immediately loadable context, no human queue. Only
+canonical-bound proposals (rules, invariants, decisions) go under
+`candidates/` at `authority: candidate` awaiting promotion:
 
 1. `.brain/brain.yaml` — `brain: 1`, `spec: "0.1"`, `conformance: 1`,
    `name`, one-line `description`, `entry: overview.md`.
@@ -43,14 +47,18 @@ Create, with today's date and truthful front matter
    where-to-go-next. Target: readable in 5 minutes.
 3. `.brain/state/now.md` — derived from recent history: active work themes,
    apparent freezes, obvious debt. `review_by`: 14 days out.
-4. `.brain/decisions/NNNN-*.md` — only decisions with *discoverable*
-   rationale (ADRs to import, explained migrations, commit messages that
-   argue). One decision per file. Do not invent context you don't have.
-5. `.brain/rules/*.md` — candidate invariants and business rules you can
-   *evidence* (from tests, comments like "do not", incident fixes, defensive
-   code). One constraint per file, with its `sources` and the consequence of
-   violating it. These are the most valuable items you can produce — and the
-   most dangerous if wrong, hence candidates.
+4. `.brain/candidates/decision-*.md` — proposed Decision Records: only
+   decisions with *discoverable* rationale (ADRs to import, explained
+   migrations, commit messages that argue). One decision per file. Do not
+   invent context you don't have. (Imported ADRs with clear human authorship
+   MAY go directly to `decisions/` with `provenance: imported`,
+   `authority: informative`, pending promotion.)
+5. `.brain/candidates/rule-*.md` — proposed invariants and business rules
+   you can *evidence* (from tests, comments like "do not", incident fixes,
+   defensive code). One constraint per file, with `sources` and the
+   consequence of violating it. These are the most valuable items you can
+   produce — and the most dangerous if wrong, hence candidates: they only
+   become binding when a human promotes them into `rules/`.
 6. `AGENTS.md` at repo root (or append a brain section if it exists):
    pointer into `.brain/`, candidates-only write rule.
 7. If existing ADRs were found: import them under `.brain/decisions/` with

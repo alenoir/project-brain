@@ -57,10 +57,12 @@ A conformant Reader **MUST**:
 
 A conformant Writer **MUST**:
 
-1. write agent-produced knowledge only as Candidates, with provenance `agent` (or `mixed`);
-2. never set, raise, or fabricate authority, and never write `verified.*` fields;
+1. write agent-produced knowledge only at authority `informative` or below, with truthful provenance (`agent` or `mixed`): Tier-1 areas (`state/`, `knowledge/`, `architecture/`, `guides/`) may be created and maintained directly; canonical-bound content (`rules/`, `decisions/`) enters only as Candidates or promotion proposals (chapter 06);
+2. never set `authority: canonical`, and never write `verified.*` fields on its own initiative (as scribe of an explicit, named human instruction — including merge-verification — is the sole exception);
 3. produce items valid against the metadata rules of chapter 09;
 4. record sources for claims wherever a source exists.
+
+A conformant Writer **SHOULD**, after a session of significant work: update `state/now.md`, and record durable findings as informative knowledge or Candidates (chapter 08).
 
 ### Validator
 

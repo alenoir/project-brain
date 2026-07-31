@@ -138,8 +138,13 @@ BRIDGE_BODY='Machine-readable project knowledge lives in `.brain/` (Project Brai
 standard — https://github.com/alenoir/project-brain).
 
 - Start with `.brain/brain.yaml`, then follow its `entry` (`.brain/overview.md`).
-- Canonical rules and invariants in `.brain/rules/` are binding.
-- Write your findings only to `.brain/candidates/` — never elsewhere in `.brain/`.
+- Before editing code, read `.brain/state/now.md` and `.brain/rules/`; when
+  you wonder "why is this like this", check `.brain/decisions/` before guessing.
+- Canonical rules and invariants are binding: never knowingly violate them,
+  never set `authority: canonical`, never write `verified` blocks.
+- After significant work, update `.brain/state/now.md` and record durable
+  findings at `authority: informative` in the proper area — proposals for
+  rules/decisions go to `.brain/candidates/`.
 - To update the Project Brain tooling of this repo ("update the brain"), run
   `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/install.sh | sh -s -- --update`
   — do not clone the standard'"'"'s repository.'
@@ -183,7 +188,7 @@ any language, map it to one of these actions:
 | "backfill the brain" / "mine the history" | Deep-backfill mode of `brain-init`: era-based history mining. |
 | "brain status" / "where is the brain at" | Report: pending items in `candidates/`, items past `review_by`, canonical items missing `verified`, items flagged `needs-review`. |
 | "validate the brain" / "lint the brain" | Run `curl -fsSL https://raw.githubusercontent.com/alenoir/project-brain/main/conformance/validate.py \| python3 - .brain` (needs `pyyaml`). Report violations; fix only what the human approves. |
-| "promote `<item>`" | The human is verifying: on their explicit instruction, move the candidate to its area, set the authority they chose, and write `verified: {by: <their handle>, at: today}`. This is the only case where you may write a `verified` block — you act as scribe for a named human decision; never promote on your own initiative. |
+| "promote `<item>`" | The human is verifying: on their explicit instruction, move the candidate to its area, set the authority they chose, and write `verified: {by: <their handle>, at: today}` — scribe for a named human decision; never promote on your own initiative. If the manifest declares `verification: merge`, prefer packaging promotions as a PR listing the promoted ids: merging is signing (spec 6.4). |
 | "review the brain" / "garden the brain" / "triage" / "reorganize" / "archive" | Delegate to the **brain-curator** agent (`.claude/agents/brain-curator.md`) — the dedicated maintainer of the brain's health. Prefer it for any multi-item maintenance work. |
 | anything else about "the brain" | Interpret it against the local `.brain/` content first; ask only if genuinely ambiguous. |
 
@@ -216,20 +221,38 @@ any language, map it to one of these actions:
 - If the code contradicts a canonical item, do not silently pick a side:
   flag the drift to the human (and propose a candidate, below).
 
-## Writing protocol (end of significant session)
+## Consultation duties (during the task — not just at start)
 
-- Distill durable findings — things the next session would otherwise
-  rediscover — into `.brain/candidates/<date>-<slug>.md`.
-- Front matter MUST include: `id`, `type`, `title`, `status: draft`,
-  `authority: candidate`, `provenance: agent`, `created`, `updated`, and
-  `sources` citing your evidence (paths, commits, PRs).
-- **Never** write elsewhere in `.brain/`, never set authority above
-  `candidate`, never write a `verified` block. Humans promote; you propose.
-- Prefer proposing an amendment to an existing item (reference its `id`)
-  over creating a near-duplicate.
-- If the session produced significant decisions, architectural changes, or
-  drift discoveries, **delegate a curation pass to the brain-curator agent**
-  (`.claude/agents/brain-curator.md`) before ending — don't wait to be asked.
+- **Before editing files in a governed path** (any path matched by a rule's
+  `scope` or a pack's `on_demand`): re-read the matching items first.
+- **Before asking the human "why is this like this?" — or worse, guessing**:
+  check `decisions/` and `archive/`. The answer is often already recorded.
+- **Before creating anything** (a file, a pattern, a dependency): check
+  `knowledge/` and `architecture/` for the existing shape.
+- When the brain answered your question, say so; when it should have but
+  didn't, that gap is a finding to record (below).
+
+## Maintenance duties (the brain is yours to keep true — RFC 0002)
+
+The brain has two tiers. **Tier 1 you maintain directly**, as part of
+ordinary work — no permission needed, no candidates detour:
+
+- `state/now.md` — **update it before ending any session of significant
+  work** (in-flight, freezes, debt discovered). Keep `updated` current.
+  This is a duty: a stale state file is your failure, not the human's.
+- `knowledge/`, `architecture/`, `guides/` — create and update items
+  freely at `authority: informative`, `provenance: agent` (or `mixed`),
+  always with `sources`. Update existing items rather than duplicating.
+
+**Tier 2 binds — you propose, humans sign**: `rules/`, `decisions/`, and
+anything `canonical`. Proposals go to `.brain/candidates/<date>-<slug>.md`
+(`authority: candidate`, `sources` required). Never set `canonical`, never
+write a `verified` block on your own initiative, never change the substance
+of a canonical item (amendment candidates only).
+
+If the session produced significant decisions, architectural changes, or
+drift discoveries, **delegate a curation pass to the brain-curator agent**
+(`.claude/agents/brain-curator.md`) before ending — don't wait to be asked.
 
 ## Maintenance ("update the brain" / "update the brain tools")
 
@@ -282,9 +305,13 @@ write the open question into the item rather than inventing a rationale.
 
 ## Step 3 — Generate
 
-Create, with today's date and truthful front matter
-(`provenance: agent`, `status: draft`, `authority: candidate`,
-`generator: "<your tool name>"`, `sources` on every claim):
+Create, with today's date and truthful front matter (`provenance: agent`,
+`generator: "<your tool name>"`, `sources` on every claim). Authority follows
+the two tiers (RFC 0002): **Tier-1 content (overview, state, knowledge,
+architecture, guides) goes directly in place at `authority: informative`,
+`status: active`** — immediately loadable context, no human queue. Only
+canonical-bound proposals (rules, invariants, decisions) go under
+`candidates/` at `authority: candidate` awaiting promotion:
 
 1. `.brain/brain.yaml` — `brain: 1`, `spec: "0.1"`, `conformance: 1`,
    `name`, one-line `description`, `entry: overview.md`.
@@ -294,14 +321,18 @@ Create, with today's date and truthful front matter
    where-to-go-next. Target: readable in 5 minutes.
 3. `.brain/state/now.md` — derived from recent history: active work themes,
    apparent freezes, obvious debt. `review_by`: 14 days out.
-4. `.brain/decisions/NNNN-*.md` — only decisions with *discoverable*
-   rationale (ADRs to import, explained migrations, commit messages that
-   argue). One decision per file. Do not invent context you don't have.
-5. `.brain/rules/*.md` — candidate invariants and business rules you can
-   *evidence* (from tests, comments like "do not", incident fixes, defensive
-   code). One constraint per file, with its `sources` and the consequence of
-   violating it. These are the most valuable items you can produce — and the
-   most dangerous if wrong, hence candidates.
+4. `.brain/candidates/decision-*.md` — proposed Decision Records: only
+   decisions with *discoverable* rationale (ADRs to import, explained
+   migrations, commit messages that argue). One decision per file. Do not
+   invent context you don't have. (Imported ADRs with clear human authorship
+   MAY go directly to `decisions/` with `provenance: imported`,
+   `authority: informative`, pending promotion.)
+5. `.brain/candidates/rule-*.md` — proposed invariants and business rules
+   you can *evidence* (from tests, comments like "do not", incident fixes,
+   defensive code). One constraint per file, with `sources` and the
+   consequence of violating it. These are the most valuable items you can
+   produce — and the most dangerous if wrong, hence candidates: they only
+   become binding when a human promotes them into `rules/`.
 6. `AGENTS.md` at repo root (or append a brain section if it exists):
    pointer into `.brain/`, candidates-only write rule.
 7. If existing ADRs were found: import them under `.brain/decisions/` with
@@ -374,8 +405,10 @@ application code; when a task needs code changes, report that back instead.
    on your own initiative. **You prepare; the human signs.** The one
    exception: on an explicit instruction naming an item and a handle
    ("promote X, handle @name"), you perform the mechanics as scribe.
-2. Unverified material (drafts, candidates) you may edit, move, split,
-   merge, and delete freely — that is your workshop.
+2. Tier-1 material (RFC 0002: anything at `authority: informative` or
+   below — `state/`, `knowledge/`, `architecture/`, `guides/`, drafts,
+   candidates) you may edit, move, split, merge, and delete freely — that
+   is your workshop. Guard it against sprawl: dedupe and cut relentlessly.
 3. Canonical or informative items: mechanical operations are yours
    (`git mv` preserving `id`, fixing broken links and cross-references,
    metadata repairs flagged by the validator). **Meaning changes are not**:

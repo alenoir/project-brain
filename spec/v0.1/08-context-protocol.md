@@ -74,16 +74,18 @@ A conformant Reader entering a repository:
 
 Steps 1–3 are cheap by construction (three small files). This is the standard's core promise: **from `git clone` to oriented in three reads.**
 
-## 8.4 The writing protocol
+## 8.4 The writing protocol *(RFC 0002: duties, not just permissions)*
 
-A conformant Writer (agent) at the end of a session:
+A conformant Writer (agent), after a session of significant work, **SHOULD**:
 
-1. MAY distill durable findings — *things the next session would otherwise rediscover* — into Candidates under `candidates/` (chapter 06): `authority: candidate`, truthful `provenance`, `sources` citing the session's evidence (files, commits, PRs).
-2. **MUST NOT** write outside `candidates/`, set authority above `candidate`, or write `verified` blocks.
-3. **SHOULD** check for an existing item covering the topic and propose an *amendment candidate* (referencing the target `id`) rather than a duplicate.
-4. **SHOULD** flag observed drift (chapter 07) via candidates referencing the drifted item.
+1. **update `state/now.md`** — in-flight work, freezes, debt discovered — directly (Tier-1, chapter 06), keeping `updated` current and authority ≤ `informative`;
+2. distill durable findings — *things the next session would otherwise rediscover* — into informative knowledge in the proper Tier-1 area, or into Candidates when canonical-bound, always with `sources` citing the session's evidence (files, commits, PRs);
+3. check for an existing item covering the topic and update it (Tier-1) or propose an *amendment candidate* (canonical) rather than create a near-duplicate;
+4. flag observed drift (chapter 07) via candidates referencing the drifted item.
 
-> *Rationale.* The write protocol is what turns agents from context *consumers* into context *producers* — safely. The inbox pattern (`candidates/`) gives agents a place to be useful without giving them the pen that writes truth.
+And **MUST NOT**: set `authority: canonical`, write `verified` blocks on its own initiative, or change the substance of canonical items (chapter 06).
+
+> *Rationale.* The write protocol is what turns agents from context *consumers* into context *maintainers*. A brain the agent feeds on every significant session stays alive between humans; a brain gated entirely on human ceremony is inert — the first field deployment proved it in one day.
 
 ## 8.5 Humans use the same doors
 

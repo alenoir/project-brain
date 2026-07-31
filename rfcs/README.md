@@ -24,5 +24,6 @@ Not required for: editorial fixes, informative guidance, examples, prior-art upd
 | # | Title | Status |
 |---|---|---|
 | [0001](0001-consumer-first-roadmap.md) | Consumer-first roadmap (applies CRITIQUE A1–A3) | Draft |
+| [0002](0002-agent-first-trust.md) | Agent-first trust model: two tiers, merge-verification, writer duties | Accepted |
 
 Further RFCs are expected to come out of [`CRITIQUE.md`](../CRITIQUE.md), which lists the open problems of the v0.1 draft (notably A6 graduated verification and A7 monorepo precedence).

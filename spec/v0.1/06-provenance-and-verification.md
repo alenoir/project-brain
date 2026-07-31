@@ -41,9 +41,31 @@ Rules:
 - A substantive edit to a canonical item invalidates its verification: the editor **MUST** either re-verify (they become `verified.by`) or downgrade the item's authority. Cosmetic edits (typos, formatting, link fixes) do not invalidate.
 - Git history provides the tamper-evidence: the commit that adds a `verified` block should come from the verifier or their reviewed PR. The spec does not mandate signatures; projects with higher assurance needs MAY layer signed commits on top.
 
-## 6.3 The promotion flow
+## 6.3 The two trust tiers *(RFC 0002)*
 
-The complete life of an agent contribution:
+The governance burden is proportional to binding force:
+
+| Tier | Authority | Maintained by | Areas |
+|---|---|---|---|
+| **Working knowledge** | `candidate`, `informative` | agents directly, humans freely | `state/`, `knowledge/`, `architecture/`, `guides/`, `candidates/` |
+| **Binding knowledge** | `canonical` | humans only, via Verification | `rules/`, `decisions/`, any promoted item |
+
+- Agents MAY create and maintain Tier-1 items directly — truthful provenance, `updated` kept current. `informative` binds no one (5.1); creating it therefore requires no ceremony.
+- `rules/` and `decisions/` are canonical-bound by nature: agent proposals for them enter via `candidates/` or a promotion proposal — never placed directly.
+- Everything in chapter 5 still applies: only `canonical` constrains readers; a Brain rich in informative knowledge is useful context, not binding truth.
+
+## 6.4 Verification paths
+
+Two equivalent ways for a human to sign:
+
+- **Explicit** — a human writes (or instructs a scribe to write) the `verified` block, as in 6.2.
+- **Merge-verification** — if the Brain Manifest declares `verification: merge`: a pull request whose description lists the item ids it promotes, once merged by a human, constitutes Verification by the merger; the `verified: {by: <merger>, at: <merge date>}` block is then completed mechanically. Merging **is** signing.
+
+In both paths the invariant of 5.1 is unchanged: `canonical` without a `verified` block is invalid. `verification: explicit` is the default; `merge` is RECOMMENDED for solo maintainers and small teams (spec 9.2).
+
+## 6.5 The promotion flow
+
+The complete life of an agent contribution bound for canonical:
 
 ```text
  agent session
@@ -63,17 +85,18 @@ The complete life of an agent contribution:
 
 Rules:
 
-- Writers (agents) **MUST** create items only under `candidates/`, with `authority: candidate` and truthful provenance (chapter 01).
-- Promotion (the move + authority change + verification) **MUST** be performed or approved by a human. A tool MAY mechanize the file operations; the *decision* is human.
+- Canonical-bound proposals **MUST** enter via `candidates/` (or a promotion proposal), with `authority: candidate` and truthful provenance (chapter 01).
+- Promotion (the move + authority change + verification) **MUST** be performed or approved by a human — explicitly, or by merge-verification (6.4). A tool MAY mechanize the file operations; the *decision* is human.
 - Unpromoted candidates do not rot into truth: a candidate older than its `expires` date (RECOMMENDED default: 90 days) **SHOULD** be deleted or archived by maintenance. A stale candidates inbox is a Brain smell.
 
-## 6.4 What agents may do without a human
+## 6.6 What agents do without a human
 
-Everything except granting trust. A conformant agent may — and is encouraged to —:
+Everything except granting binding trust. A conformant agent maintains the Tier-1 brain as part of ordinary work:
 
-- draft candidates from a session's findings ("I discovered the retry logic assumes idempotent consumers — proposing an invariant");
-- propose deprecations and drift flags (as candidates referencing the target item);
-- update its *own* previously written, still-unverified candidates;
-- assemble, cite, and cross-reference existing knowledge.
+- keeps `state/now.md` true after significant sessions (a **duty**, not a favor — chapter 08);
+- records durable findings as informative knowledge, with sources;
+- drafts canonical-bound candidates ("the retry logic assumes idempotent consumers — proposing an invariant");
+- proposes deprecations and drift flags (candidates referencing the target item);
+- assembles, cites, and cross-references existing knowledge.
 
-The line is bright: **agents produce knowledge; humans produce truth.** (Principle P4.)
+The line stays bright where it matters: **agents produce and maintain knowledge; humans produce binding truth.** (Principle P4, scoped by RFC 0002.)

@@ -58,6 +58,7 @@ Unrecognized fields **MUST** be ignored by Readers (never an error). Projects an
 | `name` |  | string | Project name. |
 | `description` |  | string | One-line project description. |
 | `context` |  | path | Path to the Context Manifest. Default `context/manifest.yaml`. |
+| `verification` |  | enum | `explicit` (default) \| `merge` — how canonical promotion is signed (spec 6.4, RFC 0002). `merge` is RECOMMENDED for solo maintainers and small teams. |
 | `areas` |  | map | Overrides of the standard area paths, if the project deviates (e.g. `decisions: adr/`). Standard names, custom paths. |
 | `children` |  | list of `{path}` | Child Brain Roots (monorepo umbrella, 3.5). |
 | `language` |  | BCP 47 tag | Primary natural language of the Brain's content (`en`, `fr`, …). |

@@ -28,8 +28,10 @@ application code; when a task needs code changes, report that back instead.
    on your own initiative. **You prepare; the human signs.** The one
    exception: on an explicit instruction naming an item and a handle
    ("promote X, handle @name"), you perform the mechanics as scribe.
-2. Unverified material (drafts, candidates) you may edit, move, split,
-   merge, and delete freely — that is your workshop.
+2. Tier-1 material (RFC 0002: anything at `authority: informative` or
+   below — `state/`, `knowledge/`, `architecture/`, `guides/`, drafts,
+   candidates) you may edit, move, split, merge, and delete freely — that
+   is your workshop. Guard it against sprawl: dedupe and cut relentlessly.
 3. Canonical or informative items: mechanical operations are yours
    (`git mv` preserving `id`, fixing broken links and cross-references,
    metadata repairs flagged by the validator). **Meaning changes are not**:
